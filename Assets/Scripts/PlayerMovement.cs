@@ -16,14 +16,17 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void Update() {
-         float horizontal = Input.GetAxis("Horizontal");
+        float horizontal = Input.GetAxis("Horizontal");
         float vertical = Input.GetAxis("Vertical");
 
-        Vector3 moveInput = new Vector3(horizontal, 0.0f, vertical).normalized;
-        Vector3 moveDirection = Quaternion.Euler(0, cameraController.rotationY, 0) * moveInput;
-        targetRotation = Quaternion.LookRotation(moveDirection);
+        float moveDelta = Mathf.Abs(horizontal) + Mathf.Abs(vertical);
 
-        characterController.Move(moveDirection * moveSpeed * Time.deltaTime);
+        if (moveDelta > 0.001) {
+            Vector3 moveInput = new Vector3(horizontal, 0.0f, vertical).normalized;
+            Vector3 moveDirection = Quaternion.Euler(0, cameraController.rotationY, 0) * moveInput;
+            targetRotation = Quaternion.LookRotation(moveDirection);
+            characterController.Move(moveDirection * moveSpeed * Time.deltaTime);
+        }
 
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
